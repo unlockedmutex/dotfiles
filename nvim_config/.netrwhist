@@ -1,0 +1,12 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhistcnt =1
+let g:netrw_dirhist_1='/Users/baptistevauthey/bitcog/arbitrage_engine'
+let g:netrw_dirhist_0='/Users/baptistevauthey/bitcog'
+let g:netrw_dirhist_9='/Users/baptistevauthey/bitcog/arbitrage_engine'
+let g:netrw_dirhist_8='/Users/baptistevauthey'
+let g:netrw_dirhist_7='/Users/baptistevauthey/src/welkin/dugong/client_ng2/src/app/actions/third-party-plugin'
+let g:netrw_dirhist_6='/Users/baptistevauthey/src/welkin/dugong/client_ng2/src/app/actions'
+let g:netrw_dirhist_5='/Users/baptistevauthey/src/welkin/dugong/client_ng2/src/app'
+let g:netrw_dirhist_4='/Users/baptistevauthey/src/welkin/dugong/client_ng2/src'
+let g:netrw_dirhist_3='/Users/baptistevauthey/src/welkin/dugong/client_ng2'
+let g:netrw_dirhist_2='/Users/baptistevauthey/src/welkin/dugong'
