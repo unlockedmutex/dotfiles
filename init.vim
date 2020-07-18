@@ -1,11 +1,8 @@
 set termguicolors
 call plug#begin('~/.local/share/nvim/plugged')
 
-" Requirements
-" Plug 'roxma/nvim-yarp'
-
 " Search
-Plug '/usr/local/opt/fzf'
+Plug 'junegunn/fzf', { 'do': './install --bin' }
 Plug 'junegunn/fzf.vim'
 
 " Git
@@ -13,43 +10,47 @@ Plug 'tpope/vim-fugitive'
 
 " Code
 Plug 'tomtom/tcomment_vim'
-Plug 'dense-analysis/ale'
 Plug 'Yggdroot/indentLine'
-Plug 'Shougo/deoplete.nvim'
 Plug 'majutsushi/tagbar'
-
-" Python
-Plug 'davidhalter/jedi-vim'
+Plug 'Shougo/deoplete.nvim'
+Plug 'neovim/nvim-lsp'
 
 " Typescript
 Plug 'HerringtonDarkholme/yats.vim'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
+" Solidity
+Plug 'tomlion/vim-solidity'
+
+" Python
+Plug 'python-rope/ropevim'
 
 " UI
 Plug 'gcmt/taboo.vim'
-Plug 'TaDaa/vimade'
 
 " Misc
 Plug 'farmergreg/vim-lastplace'
+
+" Text Objects
+Plug 'kana/vim-textobj-user'
+Plug 'jeetsukumaran/vim-pythonsense'
+Plug 'michaeljsmith/vim-indent-object'
 
 " Themes
 Plug 'xolox/vim-misc'
 Plug 'xolox/vim-colorscheme-switcher'
 Plug 'NLKNguyen/papercolor-theme'
 Plug 'kaicataldo/material.vim'
-Plug 'sainnhe/vim-color-desert-night'
-Plug 'sainnhe/vim-color-vanilla-cake'
 Plug 'srcery-colors/srcery-vim'
 Plug 'arzg/vim-oldbook8'
 Plug 'cideM/yui'
+Plug 'jaredgorski/SpaceCamp'
 Plug 'kamykn/dark-theme.vim'
-Plug 'Lokaltog/vim-monotone'
 Plug 'altercation/vim-colors-solarized'
 Plug 'danishprakash/vim-yami'
-
-
+Plug 'arzg/vim-colors-xcode'
 
 call plug#end()
+
 
 " Vanilla Nvim Settings
 set laststatus=2
@@ -64,44 +65,54 @@ set cursorline
 set sessionoptions+=tabpages,globals
 set fillchars=" "
 set scrolloff=8       " Show next 8 lines while scrolling.
-set sidescrolloff=5
-autocmd FileType python set shiftwidth=2 tabstop=2 expandtab
+set sidescrolloff=0
+autocmd BufEnter * if &buftype == 'terminal' | set sidescrolloff=0 | endif
+autocmd TermOpen * if &buftype == 'terminal' | set sidescrolloff=0 | endif
+autocmd BufEnter * if &buftype != 'terminal' | set sidescrolloff=5 | endif
+autocmd FileType python set shiftwidth=4 tabstop=4 expandtab
+
+" set winwidth=95
+" set winheight=50
 
 
 " Custom Mappings
+nmap <F9> :TagbarToggle<CR>
+nmap <F3> :PrevColorScheme<CR>
+nmap <F4> :NextColorScheme<CR>
+" Custom Commands
+cnoreabbrev H vert bo h
+
+" normal mode
+nnoremap <S-h> ^
+nnoremap <S-l> $
 nnoremap <C-J> <C-W><C-J>
 nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
-nmap <F8> :TagbarToggle<CR>
-nnoremap <Tab> :bnext<CR>
-nnoremap <S-Tab> :bprevious<CR>
-tnoremap <Esc> <C-\><C-n>
 nnoremap <F1> :Files<CR>
 nnoremap <F2> :Ag<CR>
-nnoremap <F3> :PrevColorScheme<CR>
-nnoremap <F4> :NextColorScheme<CR>
 nnoremap <C-X> :bdelete<CR>
+nnoremap <C-Space> <Enter>
+nnoremap <Esc> <Nop>
+" insert mode
+inoremap <C-j> <C-n>
+inoremap <C-k> <C-p>
+" terminal mode
+tnoremap <Esc> <C-\><C-n>
+tnoremap <C-j> <Down>
+tnoremap <C-k> <Up>
+tnoremap <C-Space> <Enter>
 
-" FZF settings
-" command! -bang -nargs=* Ag
-"   \ call fzf#vim#ag(<q-args>,
-"   \                 fzf#vim#with_preview({'options': '--delimiter : --nth 4..'},'right:50%'),
-"   \            )
-"   \ normal! ^zz
-"
-" command! -bang -nargs=? -complete=dir Files
-"   \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
-"
-" let g:fzf_layout = { 'window': '-tabnew' }
-"
-" autocmd  FileType fzf tnoremap <Esc> <C-c>
-"   \| autocmd BufLeave <buffer> tnoremap <Esc> <C-\><C-n>
+
+command! -bang -nargs=* Files
+  \ call fzf#vim#files(<q-args>,
+  \                 fzf#vim#with_preview({})
+  \                )
+
 command! -bang -nargs=* Ag
   \ call fzf#vim#ag(<q-args>,
-  \                 <bang>0 ? fzf#vim#with_preview('up:60%')
-  \                         : fzf#vim#with_preview('right:50%:hidden', '?'),
-  \                 <bang>0)
+  \                 fzf#vim#with_preview({})
+  \                )
 " HardTime settings
 let g:list_of_normal_keys = ["h", "j", "k", "l", "-", "+", "<UP>", "<DOWN>", "<LEFT>", "<RIGHT>"]
 let g:list_of_visual_keys = ["h", "j", "k", "l", "-", "+", "<UP>", "<DOWN>", "<LEFT>", "<RIGHT>"]
@@ -135,90 +146,60 @@ let g:tagbar_type_typescript = {
   \ }                                                                               
 
 
-let g:vimade = {
-  \ "normalid": '',
-  \ "normalncid": '',
-  \ "basefg": '',
-  \ "basebg": '',
-  \ "fadelevel": 0.6,
-  \ "colbufsize": 15,
-  \ "rowbufsize": 15, 
-  \ "checkinterval": 100, 
-  \ "usecursorhold": 0,
-  \ "detecttermcolors": 1,
-  \ 'enablescroll': 1, 
-  \ 'enablesigns': 0,
-  \ 'signsid': 13100,
-  \ 'signsretentionperiod': 4000,
-  \ 'fademinimap': 1,
-  \ 'fadepriority': 10,
-  \ 'groupdiff': 1,
-  \ 'groupscrollbind': 0,
-  \ 'enablefocusfading': 0}
-
 " Colorscheme settings
 let g:colorscheme_switcher_exclude_builtins = 1
 
 
 let g:deoplete#enable_at_startup = 1
 
-let g:jedi#use_tabs_not_buffers = 0
-let g:jedi#auto_initialization = 1
-let g:jedi#completions_enabled = 0
-let g:jedi#auto_vim_configuration = 0
-let g:jedi#smart_auto_mappings = 0
-let g:jedi#popup_on_dot = 0
-let g:jedi#completions_command = ""
-let g:jedi#show_call_signatures = "1"
-
 setlocal autoindent
 setlocal cindent
 setlocal smartindent
 set expandtab 
-set shiftwidth=2
-
-autocmd FileType python let b:coc_suggest_disable = 1
-autocmd FileType javascript let b:coc_suggest_disable = 0
-autocmd FileType typescript let b:coc_suggest_disable = 0
+set shiftwidth=4
+set directory=
 
 
-nmap gd <Plug>(coc-definition)
+lua << EOF
+require'nvim_lsp'.pyls_ms.setup{
+    settings = {
+        python ={
+            linting ={
+                flake8Enabled=true;
+                pylintEnabled=false;
+            }
+        }
+    }
+}
+EOF
 
 
-let g:ale_linters = {
-\   'python': ['flake8', 'pylint'],
-\}
+autocmd Filetype python setlocal omnifunc=v:lua.vim.lsp.omnifunc
 
-let g:ale_python_pylint_options = "--py3k"
+
+nnoremap  gd    <cmd>lua vim.lsp.buf.definition()<CR>
+nnoremap  cr    :call     RopeRename()<cr>
+nnoremap  gr    <cmd>lua vim.lsp.buf.references()<CR>
+" nnoremap  cf    <cmd>lua vim.lsp.buf.formatting()<CR>
+nnoremap  gD    <cmd>lua vim.lsp.buf.implementation()<CR>
+
+
+let g:neovide_cursor_trail_length=0.5
+
+
+
 
 let g:material_terminal_italics = 1
 let g:material_theme_style = 'default'
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip
-autocmd TermOpen * setlocal nobuflisted
-
 
 
 syntax on
-" Removing highlighting from all ALE errors/warnings cuz I don't like it
-" And it doesn't look clean
-highlight clear ALEStyleErrorSign
-highlight clear ALEStyleWarningSign 
-
-highlight clear ALEErrorSign
-highlight clear ALEInfoSign
-highlight clear ALEWarningSign 
-
-highlight clear ALEStyleErrorSignLineNr
-highlight clear ALEStyleWarningSignLineNr
-
-highlight clear ALEErrorSignLineNr
-highlight clear ALEInfoSignLineNr
-highlight clear ALEWarningSignLineNr
-
-" highlight clear SignColumn
 
 let g:nvim_typescript#server_path = '/usr/local/Cellar/node/12.8.0/bin/tsserver'
 
 autocmd FileType javascript set tabstop=2 shiftwidth=2 expandtab
 
-colorscheme srcery
+colorscheme spacecamp
+set guifont=Iosevka\ Fixed,Iosevka\ Fixed\ Light:h14
+set mouse=
