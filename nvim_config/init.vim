@@ -2,26 +2,23 @@ set termguicolors
 call plug#begin('~/.local/share/nvim/plugged')
 
 " Search
-Plug '/usr/local/opt/fzf'
-Plug 'junegunn/fzf.vim'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.1' }
 
 " Git
 Plug 'tpope/vim-fugitive'
-Plug 'AGhost-7/critiq.vim'
 
 " Code
 Plug 'tomtom/tcomment_vim'
 Plug 'dense-analysis/ale'
 Plug 'Yggdroot/indentLine'
 Plug 'majutsushi/tagbar'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 " Typescript
 Plug 'HerringtonDarkholme/yats.vim'
 
 " UI
 Plug 'gcmt/taboo.vim'
-Plug 'TaDaa/vimade'
 
 " Misc
 Plug 'farmergreg/vim-lastplace'
@@ -33,18 +30,7 @@ Plug 'michaeljsmith/vim-indent-object'
 
 " Themes
 Plug 'xolox/vim-misc'
-Plug 'xolox/vim-colorscheme-switcher'
-Plug 'NLKNguyen/papercolor-theme'
-Plug 'kaicataldo/material.vim'
-Plug 'sainnhe/vim-color-desert-night'
-Plug 'sainnhe/vim-color-vanilla-cake'
-Plug 'srcery-colors/srcery-vim'
-Plug 'arzg/vim-oldbook8'
-Plug 'cideM/yui'
-Plug 'kamykn/dark-theme.vim'
-Plug 'Lokaltog/vim-monotone'
-Plug 'altercation/vim-colors-solarized'
-Plug 'danishprakash/vim-yami'
+Plug 'tpope/vim-vividchalk'
 
 call plug#end()
 
@@ -58,10 +44,12 @@ let g:python_host_prog = '/Users/baptistevauthey/nvim_python2_virtualenv/bin/pyt
 "       \
 "       \ })
 
-" Critiq settings
-let g:critiq_github_oauth = 1
-autocmd User CritiqPrList nnoremap <buffer> m <Nop>
 
+"search
+nnoremap <leader>ff <cmd>Telescope find_files<cr>
+nnoremap <leader>fg <cmd>Telescope live_grep<cr>
+nnoremap <leader>fb <cmd>Telescope buffers<cr>
+nnoremap <leader>fh <cmd>Telescope help_tags<cr>
 
 " Vanilla Nvim Settings
 set laststatus=2
@@ -90,8 +78,8 @@ nnoremap <C-J> <C-W><C-J>
 nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
-nnoremap <Tab> :bnext<CR>
-nnoremap <S-Tab> :bprevious<CR>
+nnoremap <Tab> :tabnext<CR>
+nnoremap <S-Tab> :tabprevious<CR>
 nnoremap <F1> :Files<CR>
 nnoremap <F2> :Ag<CR>
 nnoremap <F3> :PrevColorScheme<CR>
@@ -110,26 +98,8 @@ tnoremap <C-k> <Up>
 tnoremap <C-Space> <Enter>
 tnoremap kj <C-\><C-n>
 
-" FZF settings
-" command! -bang -nargs=* Ag
-"   \ call fzf#vim#ag(<q-args>,
-"   \                 fzf#vim#with_preview({'options': '--delimiter : --nth 4..'},'right:50%'),
-"   \            )
-"   \ normal! ^zz
-"
-" command! -bang -nargs=? -complete=dir Files
-"   \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
-"
-" let g:fzf_layout = { 'window': '-tabnew' }
-"
-autocmd FileType fzf tnoremap kj  <Esc>
 
-command! -bang -nargs=* Ag
-  \ call fzf#vim#ag(<q-args>,
-  \                 <bang>0 ? fzf#vim#with_preview('up:60%')
-  \                         : fzf#vim#with_preview('right:50%:hidden', '?'),
-  \                 <bang>0)
-" HardTime settings
+
 let g:list_of_normal_keys = ["h", "j", "k", "l", "-", "+", "<UP>", "<DOWN>", "<LEFT>", "<RIGHT>"]
 let g:list_of_visual_keys = ["h", "j", "k", "l", "-", "+", "<UP>", "<DOWN>", "<LEFT>", "<RIGHT>"]
 let g:list_of_insert_keys = ["<UP>", "<DOWN>", "<LEFT>", "<RIGHT>"]
@@ -195,17 +165,6 @@ setlocal smartindent
 set expandtab 
 set shiftwidth=2
 
-autocmd FileType python let b:coc_suggest_disable = 0
-autocmd FileType javascript let b:coc_suggest_disable = 0
-autocmd FileType typescript let b:coc_suggest_disable = 0
-
-
-nmap gd <Plug>(coc-definition)
-nmap rn <Plug>(coc-rename)
-
-
-" Coc stuff
-nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>
 
 
 
@@ -246,4 +205,4 @@ let g:nvim_typescript#server_path = '/usr/local/Cellar/node/12.8.0/bin/tsserver'
 
 autocmd FileType javascript set tabstop=2 shiftwidth=2 expandtab
 
-colorscheme srcery
+colorscheme vividchalk
